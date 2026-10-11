@@ -60,6 +60,19 @@ export default function Cart() {
   };
 
   const addRecommendedProduct = (product: Product) => {
+    const hasVariationOptions =
+      (product.variations?.storage?.length ?? 0) > 0 ||
+      (product.variations?.colors?.length ?? 0) > 0;
+
+    if (hasVariationOptions) {
+      toast({
+        title: "Choose product options",
+        description: "Select the available storage or color before adding this product to your cart.",
+      });
+      setLocation(`/product/${product.slug}`);
+      return;
+    }
+
     const hasDiscount = product.isHotDeal && (product.hotDealDiscount || 0) > 0;
     const price = hasDiscount
       ? Math.round(product.price * (1 - (product.hotDealDiscount || 0) / 100))
